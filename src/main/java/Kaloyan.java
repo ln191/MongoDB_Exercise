@@ -43,8 +43,8 @@ public class Kaloyan {
     public static void main(String[] args) {
         Kaloyan kal = new Kaloyan();
         kal.getUsers();
-       // kal.top10ActiveUsers();
-        kal.top10LinkingUsers();
+        kal.top10ActiveUsers();
+        //kal.top10LinkingUsers();
     }
 
     public void top10ActiveUsers() {
@@ -97,18 +97,40 @@ public class Kaloyan {
 
     public void top10LinkingUsers() {
        
+        Result[] res = new Result[mymyList.size()];
+        int k = 0;
         
         for (String names : mymyList) {
             BasicDBObject searchQuery = new BasicDBObject();
             searchQuery.put("user", names);
 
             DBCursor c = collection.find(searchQuery);
+            int count = 0;
             while (c.hasNext()) {
-            System.out.println(c.next());
-            
+            if(c.next().toString().contains("@"))
+            {
+            //System.out.println(c.next());
+             count ++;
             }
         }
+            
+         Result r = new Result(count, names);
+         res[k] = r;
+         k++;
 
     }
+        Arrays.sort(res);
 
+        System.out.println(res[0].name + " " + res[0].value);
+        System.out.println(res[1].name + " " + res[1].value);
+        System.out.println(res[2].name + " " + res[2].value);
+        System.out.println(res[3].name + " " + res[3].value);
+        System.out.println(res[4].name + " " + res[4].value);
+        System.out.println(res[5].name + " " + res[5].value);
+        System.out.println(res[6].name + " " + res[6].value);
+        System.out.println(res[7].name + " " + res[7].value);
+        System.out.println(res[8].name + " " + res[8].value);
+        System.out.println(res[9].name + " " + res[9].value);
+
+    }
 }
