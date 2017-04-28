@@ -16,7 +16,7 @@ public class MongoProgram {
         MongoClient mongoClient = new MongoClient(connStr);
 
         MongoDatabase db = mongoClient.getDatabase("social_net");
-        MongoCollection<Document> collection = db.getCollection("tweets");
+        MongoCollection<Document> collection = db.getCollection("tweeets");
         //Create index on tweeter users if non already exist , makes it faster to search and count users
         collection.createIndex(Indexes.descending("user"));
 
