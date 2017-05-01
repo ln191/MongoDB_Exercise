@@ -5,8 +5,10 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -31,14 +33,12 @@ public class Kaloyan {
     List<String> mymyList = new ArrayList<String>();
 
     public void getUsers() {
-        BasicDBObject searchQuery = new BasicDBObject();
-        searchQuery.put("user", "NO_QUERY");
 
         for (Object list : myList) {
             mymyList.add(list.toString());
             // System.out.println(list);
         }
-          System.out.println("myList size is : " + myList.size());
+        System.out.println("myList size is : " + myList.size());
 
         System.out.println("mymyList users are : " + mymyList.size());
     }
@@ -49,7 +49,7 @@ public class Kaloyan {
         //System.out.println("--------------------");
         //kal.top10ActiveUsers();
         //System.out.println("--------------------");   
-        //kal.top10LinkingUsers();
+        kal.top10LinkingUsers();
         //kal.top5MostMentionedUsers();
         //kal.top5HappySadUsers();
     }
@@ -93,9 +93,9 @@ public class Kaloyan {
     public void top5HappySadUsers() {
         Result[] res = new Result[mymyList.size()];
         int k = 0;
-        
-         for (String names : mymyList) {
-            
+
+        for (String names : mymyList) {
+
             BasicDBObject searchQuery = new BasicDBObject();
 
             searchQuery.put("user", names);
@@ -104,82 +104,136 @@ public class Kaloyan {
             int count = 0;
 
             while (iterable.hasNext()) {
-                    int polarity = Integer.parseInt(iterable.next().get("polarity").toString());
-                    count += (polarity - 2);
+                int polarity = Integer.parseInt(iterable.next().get("polarity").toString());
+                count += (polarity - 2);
             }
-            
-             Result r = new Result(count, names);
-                res[k] = r;
-                k++;
-        
+
+            Result r = new Result(count, names);
+            res[k] = r;
+            k++;
+
         }
-         
-          Arrays.sort(res);
+
+        Arrays.sort(res);
 
         System.out.println(res[0].name + " " + res[0].value);
         System.out.println(res[1].name + " " + res[1].value);
         System.out.println(res[2].name + " " + res[2].value);
         System.out.println(res[3].name + " " + res[3].value);
         System.out.println(res[4].name + " " + res[4].value);
-       
-        
-        
+
         System.out.println(res[mymyList.size() - 1].name + " " + res[mymyList.size() - 1].value);
         System.out.println(res[mymyList.size() - 2].name + " " + res[mymyList.size() - 2].value);
         System.out.println(res[mymyList.size() - 3].name + " " + res[mymyList.size() - 3].value);
         System.out.println(res[mymyList.size() - 4].name + " " + res[mymyList.size() - 4].value);
         System.out.println(res[mymyList.size() - 5].name + " " + res[mymyList.size() - 5].value);
-      
+
     }
-        
 
     public void top5SadUsers() {
 
     }
 
     public void top5MostMentionedUsers() {
-        
-        Result[] res = new Result[mymyList.size()];
-        int k = 0;
-        
-        for (String names : mymyList) {
-            Document regQuery = new Document();
-            regQuery.append("$regex", "^(?i)" +"@" + Pattern.quote(names));
-            regQuery.append("$options", "i");
-            BasicDBObject searchQuery = new BasicDBObject();
+          
+        List<Result> results = new ArrayList<Result>();
+        Document regQuery = new Document();
+        regQuery.append("$regex", "^(?i)" + "@");
+        BasicDBObject searchQuery = new BasicDBObject();
 
-            searchQuery.append("text", regQuery);
-            DBCursor iterable = collection.find(searchQuery);
+        searchQuery.append("text", regQuery);
+        DBCursor iterable = collection.find(searchQuery);
+        int errorCount = 0;
+        while (iterable.hasNext()) {
+            //System.out.println(iterable.next());
 
-            int count = 0;
+            try {
+                String s = iterable.next().get("text").toString();
+                int start = s.indexOf("@") + 1;
+                int end = s.indexOf(" ");
+                String ss = s.substring(start, end);
+                System.out.println(ss);
+                
+                Result r = new Result(1, ss); 
+                if(results.contains(r) == false)
+                {
+                    results.add(r);
+                }
+                else
+                {
+                    for(Result rr : results)
+                    {
+                        if(rr.equals(r))
+                        {
+                            rr.value++;
+                        }
+                    }
+                }
 
-            while (iterable.hasNext()) {
-                    System.out.println(iterable.next());
-                    count++;
+            } catch (Exception e) {
+
+                //System.out.println(iterable.next().get("text").toString());
+                errorCount++;
+
             }
-            
-             Result r = new Result(count, names);
-                res[k] = r;
-                k++;
-        }
-        
-         Arrays.sort(res);
 
-        System.out.println(res[0].name + " " + res[0].value);
-        System.out.println(res[1].name + " " + res[1].value);
-        System.out.println(res[2].name + " " + res[2].value);
-        System.out.println(res[3].name + " " + res[3].value);
-        System.out.println(res[4].name + " " + res[4].value);
-        System.out.println(res[5].name + " " + res[5].value);
-        System.out.println(res[6].name + " " + res[6].value);
-        System.out.println(res[7].name + " " + res[7].value);
-        System.out.println(res[8].name + " " + res[8].value);
-        System.out.println(res[9].name + " " + res[9].value);
+        }
+        System.out.println(errorCount);
+        
+        Collections.sort(results);
+        
+        System.out.println(results.get(0) + " " + results.get(0).value);
+        System.out.println(results.get(1) + " " + results.get(1).value);
+        System.out.println(results.get(2) + " " + results.get(2).value);
+        System.out.println(results.get(3) + " " + results.get(3).value);
+        System.out.println(results.get(4) + " " + results.get(4).value);
+        System.out.println(results.get(5) + " " + results.get(5).value);
+        System.out.println(results.get(6) + " " + results.get(6).value);
+        System.out.println(results.get(7) + " " + results.get(7).value);
+        System.out.println(results.get(8) + " " + results.get(8).value);
+        System.out.println(results.get(9) + " " + results.get(9).value);
+        
+//        Result[] res = new Result[mymyList.size()];
+//        int k = 0;
+//
+//        for (String names : mymyList) {
+//            Document regQuery = new Document();
+//            regQuery.append("$regex", "^(?i)" + "@" + Pattern.quote(names));
+//            regQuery.append("$options", "i");
+//            BasicDBObject searchQuery = new BasicDBObject();
+//
+//            searchQuery.append("text", regQuery);
+//            DBCursor iterable = collection.find(searchQuery);
+//
+//            int count = 0;
+//
+//            while (iterable.hasNext()) {
+//                System.out.println(iterable.next());
+//                count++;
+//            }
+//
+//            Result r = new Result(count, names);
+//            res[k] = r;
+//            k++;
+//        }
+
+//        Arrays.sort(res);
+//
+//        System.out.println(res[0].name + " " + res[0].value);
+//        System.out.println(res[1].name + " " + res[1].value);
+//        System.out.println(res[2].name + " " + res[2].value);
+//        System.out.println(res[3].name + " " + res[3].value);
+//        System.out.println(res[4].name + " " + res[4].value);
+//        System.out.println(res[5].name + " " + res[5].value);
+//        System.out.println(res[6].name + " " + res[6].value);
+//        System.out.println(res[7].name + " " + res[7].value);
+//        System.out.println(res[8].name + " " + res[8].value);
+//        System.out.println(res[9].name + " " + res[9].value);
     }
 
     public void top10LinkingUsers() {
 
-        Result[] res = new Result[mymyList.size()];
+         Result[] res = new Result[mymyList.size()];
         int k = 0;
 
         for (String names : mymyList) {
@@ -211,7 +265,9 @@ public class Kaloyan {
         System.out.println(res[6].name + " " + res[6].value);
         System.out.println(res[7].name + " " + res[7].value);
         System.out.println(res[8].name + " " + res[8].value);
-        System.out.println(res[9].name + " " + res[9].value);
-
+        System.out.println(res[9].name + " " + res[9].value); 
+        
+        
+        
     }
 }
