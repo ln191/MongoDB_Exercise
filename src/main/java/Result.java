@@ -34,6 +34,24 @@ public class Result implements Comparable<Result>{
 		//ascending order
 		return compareQuantity - this.value;
     }
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if(obj == null)
+        {
+            return false;
+        }
+        else if(obj.getClass() == this.getClass())
+        {
+            Result rObj = (Result)obj;
+            if(rObj.name == this.name)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public Result(int value, String name) {
         this.value = value;
