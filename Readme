@@ -1,0 +1,55 @@
+How many Twitter users are in our database?
+In order to get all twitter user based on their tweets we ran a query of distinct user on the tweets and added them to an array we then got the size of the array and it was :
+
+659774
+
+
+Which Twitter users link the most to other Twitter users? (Provide the top ten.)
+In order to find the users who linked the most to others we iterated on the list of distinct users, checking against all of the users tweets (by querying their name) if they contained a @ that is used for linking users. We stored the total number of times a user links to others with their name in a list of iterable result objects (objects we made ourself containing only name and value) we then sorted the list and present the results
+
+lost_dog 549
+tweetpet 310
+VioletsCRUK 251
+what_bugs_u 246
+tsarnick 245
+SallytheShizzle 229
+mcraddictal 217
+Karen230683 216
+keza34 211
+TraceyHewins 202
+
+
+Who is are the most mentioned Twitter users? (Provide the top five.)
+We tried a lot of different queries but got no acceptable results
+  
+  
+Who are the most active Twitter users (top ten)?
+We did active users almost the same way as linking users the only difference is that we don't look for the @
+
+
+lost_dog 549
+webwoke 345
+tweetpet 310
+SallytheShizzle 281
+VioletsCRUK 279
+mcraddictal 276
+tsarnick 248
+what_bugs_u 246
+Karen230683 238
+DarkPiano 236
+
+
+Who are the five most grumpy (most negative tweets) and the most happy (most positive tweets)? (Provide five users for each group)
+Same idea here but instead of just counting the tweets we return the polarity and change the happiness value like so Happyness += Polarity - 2
+
+hat_bugs_u 492
+DarkPiano 452
+keza34 406
+shanajaca 390
+tsarnick 352
+
+lost_dog -1098
+tweetpet -620
+wowlew -416
+webwoke -366
+mcraddictal -288
