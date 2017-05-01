@@ -46,11 +46,14 @@ public class Kaloyan {
     public static void main(String[] args) {
         Kaloyan kal = new Kaloyan();
         kal.getUsers();
+     
+        
+      
         //System.out.println("--------------------");
         //kal.top10ActiveUsers();
         //System.out.println("--------------------");   
-        kal.top10LinkingUsers();
-        //kal.top5MostMentionedUsers();
+        //kal.top10LinkingUsers();
+        kal.top5MostMentionedUsers();
         //kal.top5HappySadUsers();
     }
 
@@ -152,23 +155,24 @@ public class Kaloyan {
                 int start = s.indexOf("@") + 1;
                 int end = s.indexOf(" ");
                 String ss = s.substring(start, end);
-                System.out.println(ss);
+                //System.out.println(ss);
                 
                 Result r = new Result(1, ss); 
-                if(results.contains(r) == false)
-                {
-                    results.add(r);
-                }
-                else
-                {
+               
+                    Boolean b = false;
                     for(Result rr : results)
                     {
                         if(rr.equals(r))
                         {
-                            rr.value++;
+                            rr.value = rr.value + 1;
+                            b = true;
                         }
                     }
-                }
+                    if(b == false)
+                    {
+                        results.add(r);
+                    }
+                
 
             } catch (Exception e) {
 
@@ -193,6 +197,16 @@ public class Kaloyan {
         System.out.println(results.get(8) + " " + results.get(8).value);
         System.out.println(results.get(9) + " " + results.get(9).value);
         
+        System.out.println(results.get(results.size() - 1) + " " + results.get(results.size()-1).value);
+        System.out.println(results.get(results.size() - 2) + " " + results.get(results.size()-2).value);
+        System.out.println(results.get(results.size() - 3) + " " + results.get(results.size()-3).value);
+        System.out.println(results.get(results.size() - 4) + " " + results.get(results.size()-4).value);
+        System.out.println(results.get(results.size() - 5) + " " + results.get(results.size()-5).value);
+        System.out.println(results.get(results.size() - 6) + " " + results.get(results.size()-6).value);
+        System.out.println(results.get(results.size() - 7) + " " + results.get(results.size()-7).value);
+        System.out.println(results.get(results.size() - 8) + " " + results.get(results.size()-8).value);
+        System.out.println(results.get(results.size() - 9) + " " + results.get(results.size()-9).value);
+        System.out.println(results.get(results.size() - 10) + " " + results.get(results.size()-10).value);
 //        Result[] res = new Result[mymyList.size()];
 //        int k = 0;
 //
